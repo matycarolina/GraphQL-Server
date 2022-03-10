@@ -1,0 +1,108 @@
+const { gql } = require("apollo-server");
+
+module.exports = gql`
+  type Query {
+    albums: [Album!]
+    tracks: [Track!]
+    releases: [Release!]
+  }
+
+  interface Release {
+    id: ID!
+    name: String!
+    artists: [Artist!]!
+    external_urls: ExternalUrlObject
+  }
+
+  type Album implements Release {
+    "Relationship between the artist and the album."
+    album_group: AlbumGroup
+
+    "The type of the album."
+    album_type: AlbumType
+
+    "The artists of the album. Each artist object includes a link in href to more detailed information about the artist."
+    artists: [Artist!]!
+
+    "Known external URLs for this album."
+    external_urls: ExternalUrlObject
+
+    "The Spotify ID for the album."
+    id: ID!
+
+    "The cover art for the album in various sizes, widest first."
+    images: [ImageObject]
+
+    "The name of the album. In case of an album takedown, the value may be an empty string."
+    name: String!
+
+    "The date the album was first released."
+    release_date: String
+  }
+
+  type Artist {
+    "Known external URLs for this artist."
+    external_urls: ExternalUrlObject
+
+    "The Spotify ID for the artist."
+    id: ID!
+
+    "The name of the artist."
+    name: String!
+  }
+
+  type ExternalUrlObject {
+    "The Spotify URL for the object."
+    spotify: String!
+  }
+
+  type ImageObject {
+    "The image height in pixels. If unknown: null or not returned."
+    height: Int
+
+    "The source URL of the image."
+    url: String!
+
+    "The image width in pixels. If unknown: null or not returned."
+    width: Int
+  }
+
+  type Track implements Release {
+    "The artists who performed the track."
+    artists: [Artist!]!
+
+    "The disc number (usually 1 unless the album consists of more than one disc)."
+    disc_number: Int
+
+    "The track length in milliseconds."
+    duration_ms: Int
+
+    "Whether or not the track has explicit lyrics ( true = yes it does; false = no it does not OR unknown)."
+    explicit: Boolean
+
+    "External URLs for this track."
+    external_urls: ExternalUrlObject
+
+    "The Spotify ID for the track."
+    id: ID!
+
+    "The name of the track."
+    name: String!
+
+    "The number of the track. If an album has several discs, the track number is the number on the specified disc."
+    track_number: Int
+  }
+
+  enum AlbumGroup {
+    ALBUM
+    SINGLE
+    COMPILATION
+    APPEARS_ON
+  }
+
+  enum AlbumType {
+    ALBUM
+    SINGLE
+    COMPILATION
+  }
+`;
